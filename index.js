@@ -182,20 +182,6 @@ app.post('/users/:Username/movies/:MovieID', async (req, res) => {
     });
 });
 
-// Allow users to add movies to their list (only return a movie has been added)
-app.post('/users/:id/:movieTitle', (req, res) => {
-    const { id, movieTitle } = req.params;
-
-    let user = users.find(user => user.id == id);
-
-    if (user) {
-        user.favoriteMovies.push(movieTitle);
-        res.status(200).send(`${movieTitle} has been added to user ${id}'s array`);
-    } else {
-        res.status(400).send("No Such User");
-    }
-})
-
 
 
 app.use((err, req, res, next) => {
