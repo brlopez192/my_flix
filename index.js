@@ -16,7 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'})
-mongoose.connect('mongodb://localhost:27017/mymongodb', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect( process.env.CONNECTION_URI, {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 app.use(morgan('combines', {stream: accessLogStream}));
@@ -41,6 +41,8 @@ app.use(cors({
 let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
+
+const {check, validationResult } = require('express-validator');
 
 app.get('/', (req, res) => {
     res.send('Weolcome to My Flix app!');
@@ -88,9 +90,19 @@ app.get('/movies/:Director', passport.authenticate('jwt', { session: false }), a
 });
 
 // Add a user
-app.post('/users', passport.authenticate('jwt', { session: false }), async (req, res) => {
-    let hashedPassword = Users.hashedPassword(req.body.Password);
-    await Users.findOne({ Username: req.body.Username })
+app.post('/users',
+    [
+    check('Username', 'Username is required').isLength({min: 5}),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail()
+    ], passport.authenticate('jwt', { session: false }), async (req, res) => {
+        let errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+          }
+        let hashedPassword = Users.hashedPassword(req.body.Password);
+        await Users.findOne({ Username: req.body.Username })
     .then((user) => {
         if (user) {
             return res.status(400).send(reqbody.Username + 'already exists');
@@ -212,6 +224,7 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
-app.listen(8080, () => {
-    console.log('Your app is listening on port 8080.');
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0', () => {
+    console.log('Listening on Port ' + port);
 });
