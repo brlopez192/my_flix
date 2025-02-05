@@ -4,7 +4,7 @@ const express = require('express'),
     morgan = require('morgan'),
     fs = require('fs'),
     mongoose = require('mongoose'),
-    Models = require('./models.js'),
+    Models = require('./models'),
     bodyParser = require('body-parser'),
     uuid = require('uuid');
     path = require('path');
@@ -44,7 +44,7 @@ const passport = require('passport');
 require('./passport');
 
 const {check, validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs');
+
 
 app.get('/', (req, res) => {
     res.send('Weolcome to My Flix app!');
