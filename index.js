@@ -5,8 +5,6 @@ const express = require('express'),
     fs = require('fs'),
     mongoose = require('mongoose'),
     Models = require('./models'),
-    Auth = require('./auth'),
-    Index = require('./index'),
     bodyParser = require('body-parser'),
     uuid = require('uuid');
     path = require('path');
@@ -41,7 +39,7 @@ app.use(cors({
   }
 }));
 
-let auth = require('./auth')(app);
+const auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
