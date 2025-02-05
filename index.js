@@ -12,6 +12,7 @@ const { title } = require('process');
 const Movies = Models.Movie;
 const Users = Models.User;
 
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -43,6 +44,7 @@ const passport = require('passport');
 require('./passport');
 
 const {check, validationResult } = require('express-validator');
+const bcrypt = require('bcrypt');
 
 app.get('/', (req, res) => {
     res.send('Weolcome to My Flix app!');
