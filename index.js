@@ -44,7 +44,7 @@ const passport = require('passport');
 require('./passport');
 
 const {check, validationResult } = require('express-validator');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 app.get('/', (req, res) => {
     res.send('Weolcome to My Flix app!');
