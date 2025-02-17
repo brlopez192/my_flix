@@ -49,6 +49,7 @@ const {check, validationResult } = require('express-validator');
 app.get('/', (req, res) => {
     res.send('Weolcome to My Flix app!');
 });
+
 app.get('/documentation', (req, res) => {
     res.sendFile('public/documentation.html', {root: __dirname});
 });
